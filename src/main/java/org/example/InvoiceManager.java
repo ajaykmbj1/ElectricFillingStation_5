@@ -41,4 +41,7 @@ public class InvoiceManager {
         invoices.put(invoiceID, invoice);
         return invoice;
     }
+    public void addInvoiceDirectly(Invoice invoice) {
+        invoices.put(invoice.getInvoiceID(), invoice);
+    }
 }

@@ -8,6 +8,9 @@ public class CommonSteps {
     public static LocationManager locationManager;
     public static ChargerManager chargerManager;
     public static CustomerManager customerManager;
+    public static PriceManager priceManager;
+    public static InvoiceManager invoiceManager;
+    public static ChargingSessionManager sessionManager;
 
     @Given("the Filling Station Network is available")
     public void setupNetwork() {
@@ -15,5 +18,8 @@ public class CommonSteps {
         locationManager = new LocationManager();
         chargerManager = new ChargerManager();
         customerManager = new CustomerManager();
+        priceManager = new PriceManager();
+        invoiceManager = new InvoiceManager();
+        sessionManager = new ChargingSessionManager();
     }
 }
