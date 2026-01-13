@@ -14,7 +14,7 @@ public class StepDefinitionsCharger {
     // --- SCENARIO 1: CREATE (ADD TO LOCATION) ---
 
     @When("I add a charger with ID {string} of type {string} to location {string}")
-    public void addCharger(String chargerId, String type, String locationId) {
+    public void addCharger(String chargerId, ChargerType type, String locationId) {
         Location loc = getLocManager().readLocation(locationId);
         assertNotNull(loc, "Location " + locationId + " not found");
 
@@ -51,7 +51,7 @@ public class StepDefinitionsCharger {
     // --- SCENARIO 3: UPDATE ---
 
     @When("I update the charger {string} to have type {string}")
-    public void updateChargerType(String chargerId, String newType) {
+    public void updateChargerType(String chargerId, ChargerType newType) {
         Charger c = getChgManager().readCharger(chargerId);
         assertNotNull(c, "Charger " + chargerId + " not found for update");
 
@@ -86,7 +86,7 @@ public class StepDefinitionsCharger {
     // --- SCENARIO 5: DUPLICATE CHECK ---
 
     @When("I attempt to add a charger with ID {string} of type {string} to location {string}")
-    public void attemptAddDuplicateCharger(String chargerId, String type, String locId) {
+    public void attemptAddDuplicateCharger(String chargerId, ChargerType type, String locId) {
         try {
             // Attempt create (Should throw exception if ID exists)
             Charger c = getChgManager().createCharger(chargerId, type);

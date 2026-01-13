@@ -22,7 +22,7 @@ public class ElectricChargingStationNetwork {
 
         // --- CHARGER ---
         System.out.println("\n--- Charger Management ---");
-        Charger chg = chgManager.createCharger("CHG-100", "HPC");
+        Charger chg = chgManager.createCharger("CHG-100", ChargerType.AC);
         // Charger der Location hinzufügen (Verbindung herstellen)
         loc.addCharger(chg);
         System.out.println("Charger Created & Added: " + chg);

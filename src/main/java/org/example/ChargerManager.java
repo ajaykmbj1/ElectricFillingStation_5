@@ -6,7 +6,7 @@ import java.util.Map;
 public class ChargerManager {
     private Map<String, Charger> chargers = new HashMap<>();
 
-    public Charger createCharger(String id, String type) {
+    public Charger createCharger(String id, ChargerType type) {
         if (chargers.containsKey(id)) {
             throw new IllegalArgumentException("Charger ID already exists: " + id);
         }

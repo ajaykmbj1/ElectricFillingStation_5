@@ -2,11 +2,11 @@ package org.example;
 
 public class Charger {
     private String id;
-    private String type; // e.g., HPC, AC, DC
+    private ChargerType type;
     private ChargerStatus status;
 
     // --- CREATE FUNCTION ---
-    public static Charger create(String id, String type) {
+    public static Charger create(String id, ChargerType type) {
         Charger c = new Charger();
         c.id = id;
         c.type = type;
@@ -14,7 +14,7 @@ public class Charger {
     }
 
     // --- UPDATE FUNCTION ---
-    public Charger updateType(String newType) {
+    public Charger updateType(ChargerType newType) {
         this.type = newType;
         return this;
     }
@@ -25,7 +25,7 @@ public class Charger {
 
     // --- READ FUNCTION ---
     public String getId() { return id; }
-    public String getType() { return type; }
+    public ChargerType getType() { return type; }
     public ChargerStatus getStatus() { return status; }
 
     @Override
