@@ -33,4 +33,7 @@ public class Charger {
     public String toString() {
         return "Charger{ID='" + id + "', Type='" + type + "' Status='" + status + "'};}";
     }
+
+    public void setStatus(ChargerStatus chargerStatus) {
+    }
 }
