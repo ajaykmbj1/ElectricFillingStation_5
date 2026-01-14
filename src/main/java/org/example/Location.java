@@ -28,7 +28,6 @@ public class Location {
         return this;
     }
 
-    // Read methods
     public String getId() { return id; }
     public String getName() { return name; }
     public List<Charger> getChargers() { return chargers; }

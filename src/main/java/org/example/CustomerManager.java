@@ -6,10 +6,20 @@ import java.util.Map;
 public class CustomerManager {
     private Map<String, Customer> customers = new HashMap<>();
 
-    public Customer createCustomer(String id, String name, double balance) {
-        Customer c = Customer.create(id, name, balance);
-        customers.put(id, c);
-        return c;
+    public void createCustomer(Customer customer) {
+        customers.put(customer.getCustomerID(), customer);
+
+    }
+
+    public void topUpBalance(String customerId, double amount) {
+        Customer customer = customers.get(customerId);
+        if (customer == null) {
+            throw new IllegalArgumentException("Customer not found with ID: " + customerId);
+        }
+
+        double newBalance = customer.getBalance() + amount;
+
+        customer.updateBalance(newBalance);
     }
 
     public Customer readCustomer(String id) {

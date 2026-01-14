@@ -6,29 +6,42 @@ public class ChargingSession {
     private String sessionID;
     private Date startTime;
     private Date endTime;
+    private ChargerType charger;
 
-    // We need these references to know WHO is charging WHERE
-    private Charger charger;
-    private Customer customer;
-    private double kwhCharged; // To store consumption
-
-    public ChargingSession(String sessionID, Charger charger, Customer customer) {
+    public ChargingSession(String sessionID, ChargerType charger) {
         this.sessionID = sessionID;
-        this.charger = charger;
-        this.customer = customer;
         this.startTime = new Date(); // Sets time to NOW
+        this.charger = charger;
     }
 
     // Setters for process flow
     public void setEndTime(Date endTime) { this.endTime = endTime; }
-    public void setKwhCharged(double kwh) { this.kwhCharged = kwh; }
+
 
     // Getters
     public String getSessionID() { return sessionID; }
     public Date getStartTime() { return startTime; }
     public Date getEndTime() { return endTime; }
-    public Charger getCharger() { return charger; }
-    public double getKwhCharged() { return kwhCharged; }
+    public ChargerType getCharger() { return charger; }
+    //returns zero when is still charging
+    public double getChargedKwh() {
+        if (endTime == null) {
+            return 0;
+        }
+
+        if (charger == ChargerType.DC) {
+            long diffInMillis = endTime.getTime() - startTime.getTime();
+            double diffInMin = diffInMillis / (60.0 * 1000.0);
+
+            return diffInMin * 10;
+        }
+        long diffInMillis = endTime.getTime() - startTime.getTime();
+        double diffInMin = diffInMillis / (60.0 * 1000.0);
+
+        return diffInMin * 5;
+
+    }
+
 
     // Helper to calculate duration in minutes
     public double getDurationInMinutes() {

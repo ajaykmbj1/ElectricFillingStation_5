@@ -17,7 +17,8 @@ public class StepDefinitionsCustomer {
     @When("I register a client with ID {string} and name {string}")
     public void registerClient(String id, String name) {
         // Create new customer with default 0.0 balance
-        this.lastCustomer = getCustManager().createCustomer(id, name, 0.0);
+        this.lastCustomer = Customer.create(id, name, 0.0);
+        getCustManager().createCustomer(lastCustomer);
     }
 
     @Then("the system should return a client details string containing {string}")
@@ -32,7 +33,8 @@ public class StepDefinitionsCustomer {
     // This step belongs ONLY here. Remove it from StepDefinitionsLocation if it exists there.
     @Given("a client exists with ID {string} and name {string}")
     public void setupExistingClient(String id, String name) {
-        getCustManager().createCustomer(id, name, 0.0);
+        Customer customer = Customer.create(id, name, 0.0);
+        getCustManager().updateCustomer(customer);
     }
 
     @Then("the client {string} should be retrievable")
@@ -81,7 +83,8 @@ public class StepDefinitionsCustomer {
             System.out.println("Blocked duplicate registration for ID: " + id);
             // Do NOT call createCustomer here
         } else {
-            getCustManager().createCustomer(id, name, 0.0);
+
+            getCustManager().createCustomer(Customer.create(id, name, 0.0));
         }
     }
 

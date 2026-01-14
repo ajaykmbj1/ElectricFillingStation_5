@@ -29,7 +29,8 @@ public class ElectricChargingStationNetwork {
 
         // --- CUSTOMER ---
         System.out.println("\n--- Customer Management ---");
-        Customer cust = custManager.createCustomer("CUST-99", "Max Mustermann", 50.00);
+        Customer cust = Customer.create("CUST-99", "Max Mustermann", 50.00);
+        custManager.createCustomer(cust);
         System.out.println("Customer: " + cust);
 
         // Balance ändern

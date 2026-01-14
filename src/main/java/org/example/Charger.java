@@ -5,7 +5,6 @@ public class Charger {
     private ChargerType type;
     private ChargerStatus status;
 
-    // --- CREATE FUNCTION ---
     public static Charger create(String id, ChargerType type) {
         Charger c = new Charger();
         c.id = id;
@@ -13,7 +12,6 @@ public class Charger {
         return c;
     }
 
-    // --- UPDATE FUNCTION ---
     public Charger updateType(ChargerType newType) {
         this.type = newType;
         return this;
@@ -23,10 +21,13 @@ public class Charger {
         return this;
     }
 
-    // --- READ FUNCTION ---
     public String getId() { return id; }
     public ChargerType getType() { return type; }
     public ChargerStatus getStatus() { return status; }
+
+    public void setStatus(ChargerStatus chargerStatus) {
+        this.status = chargerStatus;
+    }
 
     @Override
     public String toString() {

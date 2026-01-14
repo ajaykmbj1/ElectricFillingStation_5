@@ -15,19 +15,16 @@ public class LocationManager {
         return loc;
     }
 
-
     public Location readLocation(String id) {
         return locations.get(id);
     }
 
-    // Nimmt ein Location Objekt entgegen und aktualisiert es im Speicher
     public void updateLocation(Location location) {
         if (!locations.containsKey(location.getId())) {
             throw new IllegalArgumentException("Location not found for update: " + location.getId());
         }
         locations.put(location.getId(), location);
     }
-
 
     public void deleteLocation(String id) {
         if (locations.remove(id) == null) {

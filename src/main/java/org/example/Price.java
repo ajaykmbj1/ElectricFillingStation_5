@@ -17,7 +17,6 @@ public class Price {
         this.validFrom = validFrom;
     }
 
-    // Getters
     public String getPriceID() { return priceID; }
     public ChargerType getMode() { return mode; }
     public double getPerformanceKwh() { return performanceKwh; }
