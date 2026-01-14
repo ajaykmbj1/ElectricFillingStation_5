@@ -6,40 +6,47 @@ public class ChargingSession {
     private String sessionID;
     private Date startTime;
     private Date endTime;
-    private ChargerType charger;
+    private ChargerType chargerType;
+    private String locationID = "";
+    private double manualKwh = 0;
+    private double manualDurationMinutes = 0;
 
     public ChargingSession(String sessionID, ChargerType charger) {
         this.sessionID = sessionID;
         this.startTime = new Date(); // Sets time to NOW
-        this.charger = charger;
+        this.chargerType = charger;
+    }
+    public ChargingSession(String sessionID, String locationID, double kwh, double minutes, ChargerType type) {
+        this.sessionID = sessionID;
+        this.locationID = locationID;
+        this.manualKwh = kwh;
+        this.manualDurationMinutes = minutes;
+        this.chargerType = type;
+        // Wir setzen fiktive Start/Endzeiten, damit Logik nicht crasht
+        this.startTime = new Date();
+        this.endTime = new Date(startTime.getTime() + (long)(minutes * 60000));
     }
 
     // Setters for process flow
     public void setEndTime(Date endTime) { this.endTime = endTime; }
-
-
     // Getters
     public String getSessionID() { return sessionID; }
     public Date getStartTime() { return startTime; }
     public Date getEndTime() { return endTime; }
-    public ChargerType getCharger() { return charger; }
-    //returns zero when is still charging
+    public ChargerType getChargerType() { return chargerType; }
+
     public double getChargedKwh() {
-        if (endTime == null) {
-            return 0;
+        if (manualKwh != 0) {
+            return manualKwh;
         }
 
-        if (charger == ChargerType.DC) {
-            long diffInMillis = endTime.getTime() - startTime.getTime();
-            double diffInMin = diffInMillis / (60.0 * 1000.0);
+        if (endTime == null) return 0;
 
-            return diffInMin * 10;
+        double duration = getDurationInMinutes();
+        if (chargerType == ChargerType.DC) {
+            return duration * 10;
         }
-        long diffInMillis = endTime.getTime() - startTime.getTime();
-        double diffInMin = diffInMillis / (60.0 * 1000.0);
-
-        return diffInMin * 5;
-
+        return duration * 5;
     }
 
 

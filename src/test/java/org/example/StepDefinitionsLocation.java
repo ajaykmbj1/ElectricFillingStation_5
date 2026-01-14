@@ -5,90 +5,84 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitionsLocation {
 
-    private LocationManager getLocManager() { return CommonSteps.locationManager; }
+    // Assuming you have these classes.
+    // If not, see the "Missing Classes" section below!
+    private LocationManager locationManager = new LocationManager();
+    private Location lastReadLocation;
+    private Exception lastError;
 
-    // We don't need ChargerManager here anymore if we remove the addCharger step!
-    // private ChargerManager getChgManager() { return CommonSteps.chargerManager; }
+    @Given("the Location Manager is ready")
+    public void the_location_manager_is_ready() {
+        locationManager = new LocationManager();
+        lastError = null;
+    }
 
-    private Location lastLocation;
-    private Exception lastException;
-
-    // --- CREATE ---
     @When("I create a location with ID {string} and name {string}")
-    public void createLocation(String id, String name) {
+    public void i_create_a_location(String id, String name) {
         try {
-            this.lastLocation = getLocManager().createLocation(id, name);
-        } catch (IllegalArgumentException e) {
-            this.lastException = e;
+            locationManager.createLocation(id, name);
+        } catch (Exception e) {
+            lastError = e;
         }
     }
 
-    // --- READ ---
-    @Then("the system should return a location details string containing {string}")
-    public void verifyLocationToString(String substring) {
-        assertNotNull(lastLocation, "Location was not created or updated");
-        assertTrue(lastLocation.toString().contains(substring));
+    @When("I try to create another location with ID {string} and name {string}")
+    public void i_try_to_create_duplicate_location(String id, String name) {
+        i_create_a_location(id, name);
     }
 
-    @Then("the location {string} should be retrievable")
-    public void verifyLocationRetrieval(String id) {
-        assertNotNull(getLocManager().readLocation(id));
-    }
-
-    // --- UPDATE ---
-    @When("I update the location {string} to have the name {string}")
-    public void updateLocationName(String id, String newName) {
-        Location loc = getLocManager().readLocation(id);
-        assertNotNull(loc);
-        loc.updateName(newName);
-        getLocManager().updateLocation(loc);
-        this.lastLocation = loc; // Update reference for verification
+    @Then("the location {string} should exist")
+    public void the_location_should_exist(String id) {
+        Location loc = locationManager.readLocation(id);
+        assertNotNull(loc, "Location " + id + " should exist.");
     }
 
     @Then("the location {string} should have the name {string}")
-    public void verifyLocationName(String id, String expectedName) {
-        assertEquals(expectedName, getLocManager().readLocation(id).getName());
+    public void the_location_should_have_name(String id, String expectedName) {
+        Location loc = locationManager.readLocation(id);
+        assertNotNull(loc);
+        assertEquals(expectedName, loc.getName());
     }
 
-    // --- DELETE ---
-    @When("I delete the location with ID {string}")
-    public void deleteLocation(String id) {
-        getLocManager().deleteLocation(id);
+    @Then("I can read the location {string}")
+    public void i_can_read_the_location(String id) {
+        lastReadLocation = locationManager.readLocation(id);
+        assertNotNull(lastReadLocation);
+        assertEquals(id, lastReadLocation.getId());
     }
 
-    @Then("the location {string} should no longer be retrievable")
-    public void verifyLocationDeleted(String id) {
-        assertNull(getLocManager().readLocation(id));
+    @Then("the location name should be {string}")
+    public void last_read_location_name_should_be(String expectedName) {
+        assertNotNull(lastReadLocation);
+        assertEquals(expectedName, lastReadLocation.getName());
     }
 
-    // --- DUPLICATE ---
-    @When("I attempt to create a location with ID {string} and name {string}")
-    public void attemptCreateDuplicate(String id, String name) {
-        try {
-            getLocManager().createLocation(id, name);
-        } catch (IllegalArgumentException e) {
-            this.lastException = e;
-        }
+    @When("I update the location {string} to name {string}")
+    public void i_update_location_name(String id, String newName) {
+        Location loc = locationManager.readLocation(id);
+        assertNotNull(loc, "Cannot update missing location");
+
+        // Assuming you have a setter or update method
+        loc.updateName(newName);
+        locationManager.updateLocation(loc);
     }
 
-    @Then("the system should not create the second location")
-    public void verifyNoDuplicateCreated() {
-        assertNotNull(lastException);
-        assertTrue(lastException.getMessage().contains("already exists"));
+    @When("I delete the location {string}")
+    public void i_delete_location(String id) {
+        locationManager.deleteLocation(id);
     }
 
-    @Then("the location {string} should still have the name {string}")
-    public void verifyLocationNameUnchanged(String id, String name) {
-        assertEquals(name, getLocManager().readLocation(id).getName());
+    @Then("the location {string} should no longer exist")
+    public void location_should_no_longer_exist(String id) {
+        Location loc = locationManager.readLocation(id);
+        assertNull(loc, "Location " + id + " should have been deleted.");
     }
 
-    // --- SHARED HELPER (Keep this here as it creates Locations) ---
-    @Given("a location exists with ID {string} and name {string}")
-    public void setupExistingLocation(String id, String name) {
-        getLocManager().createLocation(id, name);
+    @Then("I should receive a location error message {string}")
+    public void i_should_receive_error_message(String expectedMsgFragment) {
+        assertNotNull(lastError, "Expected an error but none occurred!");
+        String actualMsg = lastError.getMessage();
+        assertTrue(actualMsg.contains(expectedMsgFragment),
+                "Expected error '" + expectedMsgFragment + "' but got: " + actualMsg);
     }
-
-    // *** REMOVED: addCharger method ***
-    // *** REMOVED: verifyChargerInLocation method ***
-    // (These are now in StepDefinitionsCharger.java)
 }

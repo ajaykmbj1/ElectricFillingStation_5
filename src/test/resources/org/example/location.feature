@@ -1,34 +1,34 @@
 Feature: Location
-  As an Owner
-  I want to create and view locations
-  So that I can manage my locations
+  As an Administrator
+  I want to manage filling station locations
+  So that I can keep track of where chargers are installed
 
   Scenario: Create a new Location
-    Given the Filling Station Network is available
-    When I create a location with ID "LOC-01" and name "Floridsdorf"
-    Then the system should return a location details string containing "Floridsdorf"
+    Given the Location Manager is ready
+    When I create a location with ID "LOC-01" and name "Vienna Central"
+    Then the location "LOC-01" should exist
+    And the location "LOC-01" should have the name "Vienna Central"
 
   Scenario: Read an existing Location
-    Given the Filling Station Network is available
-    And a location exists with ID "LOC-READ-01" and name "Favoriten"
-    Then the location "LOC-READ-01" should be retrievable
+    Given the Location Manager is ready
+    And I create a location with ID "LOC-READ" and name "Graz North"
+    Then I can read the location "LOC-READ"
+    And the location name should be "Graz North"
 
-  Scenario: Update a Location Name
-    Given the Filling Station Network is available
-    And a location exists with ID "LOC-UPD-01" and name "Floridsdorf"
-    When I update the location "LOC-UPD-01" to have the name "Donaustadt"
-    Then the system should return a location details string containing "Donaustadt"
-    And the location "LOC-UPD-01" should have the name "Donaustadt"
+  Scenario: Update Location Name
+    Given the Location Manager is ready
+    And I create a location with ID "LOC-UPD" and name "Old Name"
+    When I update the location "LOC-UPD" to name "New Name"
+    Then the location "LOC-UPD" should have the name "New Name"
 
   Scenario: Delete a Location
-    Given the Filling Station Network is available
-    And a location exists with ID "LOC-DEL-01" and name "Temporary Site"
-    When I delete the location with ID "LOC-DEL-01"
-    Then the location "LOC-DEL-01" should no longer be retrievable
+    Given the Location Manager is ready
+    And I create a location with ID "LOC-DEL" and name "Temporary Site"
+    When I delete the location "LOC-DEL"
+    Then the location "LOC-DEL" should no longer exist
 
-  Scenario: Attempt to Create Duplicate Location
-    Given the Filling Station Network is available
-    And a location exists with ID "LOC-DUP-01" and name "First Site"
-    When I attempt to create a location with ID "LOC-DUP-01" and name "Duplicate Site"
-    Then the system should not create the second location
-    And the location "LOC-DUP-01" should still have the name "First Site"
+  Scenario: Attempt to create duplicate Location
+    Given the Location Manager is ready
+    And I create a location with ID "LOC-DUP" and name "First Site"
+    When I try to create another location with ID "LOC-DUP" and name "Second Site"
+    Then I should receive a location error message "Location ID already exists"

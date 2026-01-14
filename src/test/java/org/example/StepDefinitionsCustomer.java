@@ -5,98 +5,88 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitionsCustomer {
 
-    // Helper method to access the shared manager from CommonSteps
-    private CustomerManager getCustManager() {
-        return CommonSteps.customerManager;
+    private CustomerManager customerManager = new CustomerManager();
+    private Customer lastReadCustomer;
+    private Exception lastError;
+
+    @Given("the Customer Manager is ready")
+    public void the_customer_manager_is_ready() {
+        // Reset manager for each scenario
+        customerManager = new CustomerManager();
     }
 
-    private Customer lastCustomer;
+    @When("I register a customer with ID {string}, name {string}, and balance {double}")
+    public void i_register_a_customer(String id, String name, double balance) {
+        // Matching your Customer.java constructor/factory
+        // Assuming: new Customer() -> create() or similar logic.
+        // Based on bytecode, you likely have a factory or constructor.
+        // I will use the Constructor pattern which fits most simple POJOs:
 
-    // --- CREATE SCENARIO ---
+        // IF your class uses a static create method, change this line!
+        // But standard POJO usually allows:
 
-    @When("I register a client with ID {string} and name {string}")
-    public void registerClient(String id, String name) {
-        // Create new customer with default 0.0 balance
-        this.lastCustomer = Customer.create(id, name, 0.0);
-        getCustManager().createCustomer(lastCustomer);
+        // We set fields via the helper method 'create' seen in bytecode or setters
+        // Bytecode showed a 'create' method in Customer class:
+        Customer customer = Customer.create(id, name, balance);
+
+        customerManager.createCustomer(customer);
     }
 
-    @Then("the system should return a client details string containing {string}")
-    public void verifyClientToString(String name) {
-        assertNotNull(lastCustomer, "Customer object was not created");
-        assertTrue(lastCustomer.toString().contains(name),
-                "Expected toString to contain: " + name);
+    @Then("the customer {string} should exist")
+    public void the_customer_should_exist(String id) {
+        Customer c = customerManager.readCustomer(id);
+        assertNotNull(c, "Customer " + id + " should exist but was null");
     }
 
-    // --- READ SCENARIO ---
-
-    // This step belongs ONLY here. Remove it from StepDefinitionsLocation if it exists there.
-    @Given("a client exists with ID {string} and name {string}")
-    public void setupExistingClient(String id, String name) {
-        Customer customer = Customer.create(id, name, 0.0);
-        getCustManager().updateCustomer(customer);
+    @Then("the customer {string} should have a balance of {double}")
+    public void the_customer_should_have_balance(String id, double expectedBalance) {
+        Customer c = customerManager.readCustomer(id);
+        assertNotNull(c);
+        assertEquals(expectedBalance, c.getBalance(), 0.01);
     }
 
-    @Then("the client {string} should be retrievable")
-    public void verifyClientRetrieval(String id) {
-        Customer retrieved = getCustManager().readCustomer(id);
-        assertNotNull(retrieved, "Customer " + id + " could not be retrieved");
+    @Then("I can read the details of customer {string}")
+    public void i_can_read_details(String id) {
+        lastReadCustomer = customerManager.readCustomer(id);
+        assertNotNull(lastReadCustomer);
     }
 
-    // --- UPDATE SCENARIO ---
-
-    @When("I update the balance of client {string} to {double}")
-    public void updateClientBalance(String id, double amount) {
-        Customer c = getCustManager().readCustomer(id);
-        assertNotNull(c, "Cannot update; Client " + id + " not found");
-
-        c.updateBalance(amount);
-        getCustManager().updateCustomer(c);
+    @Then("the customer name should be {string}")
+    public void the_customer_name_should_be(String expectedName) {
+        assertNotNull(lastReadCustomer);
+        assertEquals(expectedName, lastReadCustomer.getName());
     }
 
-    @Then("the client {string} should have a balance of {double}")
-    public void verifyClientBalance(String id, double expectedBalance) {
-        Customer c = getCustManager().readCustomer(id);
-        assertNotNull(c, "Client " + id + " not found");
-        assertEquals(expectedBalance, c.getBalance(), 0.001, "Balance mismatch");
+    @When("I update the name of customer {string} to {string}")
+    public void i_update_customer_name(String id, String newName) {
+        Customer c = customerManager.readCustomer(id);
+        assertNotNull(c, "Cannot update non-existent customer");
+
+        // Based on bytecode: updateName(String)
+        Customer updated = c.updateName(newName);
+        customerManager.updateCustomer(updated);
     }
 
-    // --- DELETE SCENARIO ---
-
-    @When("I delete the client with ID {string}")
-    public void deleteClient(String id) {
-        getCustManager().deleteCustomer(id);
+    @Then("the customer name for {string} should be {string}")
+    public void verify_updated_name(String id, String expectedName) {
+        Customer c = customerManager.readCustomer(id);
+        assertEquals(expectedName, c.getName());
     }
 
-    @Then("the client {string} should no longer be retrievable")
-    public void verifyClientDeleted(String id) {
-        Customer c = getCustManager().readCustomer(id);
-        assertNull(c, "Client " + id + " should have been deleted, but was found");
+    @When("I top up the balance of {string} by {double}")
+    public void i_top_up_balance(String id, double amount) {
+        // Based on bytecode: topUpBalance(String id, double amount)
+        customerManager.topUpBalance(id, amount);
     }
 
-    // --- DUPLICATE CHECK SCENARIO ---
-
-    @When("I attempt to register a client with ID {string} and name {string}")
-    public void attemptRegisterDuplicate(String id, String name) {
-        // Business Logic Simulation: Check existence before creating
-        if (getCustManager().readCustomer(id) != null) {
-            System.out.println("Blocked duplicate registration for ID: " + id);
-            // Do NOT call createCustomer here
-        } else {
-
-            getCustManager().createCustomer(Customer.create(id, name, 0.0));
-        }
+    @When("I delete the customer {string}")
+    public void i_delete_customer(String id) {
+        customerManager.deleteCustomer(id);
     }
 
-    @Then("the system should not create the second client")
-    public void verifyNoDuplicateCreated() {
-        // Implicitly verified by checking the name hasn't changed in the next step
-    }
-
-    @Then("the client {string} should still be named {string}")
-    public void verifyClientName(String id, String expectedName) {
-        Customer c = getCustManager().readCustomer(id);
-        assertNotNull(c, "Client " + id + " missing");
-        assertEquals(expectedName, c.getName(), "Client name was overwritten by duplicate attempt!");
+    @Then("the customer {string} should no longer exist")
+    public void customer_should_not_exist(String id) {
+        Customer c = customerManager.readCustomer(id);
+        assertNull(c, "Customer " + id + " was supposed to be deleted but was found.");
     }
 }

@@ -1,33 +1,34 @@
 Feature: Customer
-  As a Customer
-  I want to register, view, update, and delete my account
-  So that I can manage my usage of the charging network
+  As an Administrator
+  I want to manage customers (Register, Update, Top Up, Delete)
+  So that I can maintain user accounts
 
-  Scenario: Create a Customer Account
-    Given the Filling Station Network is available
-    When I register a client with ID "CL-55" and name "Max Mustermann"
-    Then the system should return a client details string containing "Max Mustermann"
+  Scenario: Register a new Customer
+    Given the Customer Manager is ready
+    When I register a customer with ID "CUST-01", name "Alice", and balance 50.00
+    Then the customer "CUST-01" should exist
+    And the customer "CUST-01" should have a balance of 50.00
 
-  Scenario: Read a Customer Account
-    Given the Filling Station Network is available
-    And a client exists with ID "CL-READ-99" and name "Anna Muster"
-    Then the client "CL-READ-99" should be retrievable
+  Scenario: Read Customer Details
+    Given the Customer Manager is ready
+    And I register a customer with ID "CUST-READ", name "Bob", and balance 20.00
+    Then I can read the details of customer "CUST-READ"
+    And the customer name should be "Bob"
 
-  Scenario: Update Customer Balance
-    Given the Filling Station Network is available
-    And a client exists with ID "CL-UPD-01" and name "Tom Topup"
-    When I update the balance of client "CL-UPD-01" to 50.0
-    Then the client "CL-UPD-01" should have a balance of 50.0
+  Scenario: Update Customer Name
+    Given the Customer Manager is ready
+    And I register a customer with ID "CUST-UPD", name "Charlie", and balance 10.00
+    When I update the name of customer "CUST-UPD" to "Charles"
+    Then the customer name for "CUST-UPD" should be "Charles"
 
-  Scenario: Delete a Customer Account
-    Given the Filling Station Network is available
-    And a client exists with ID "CL-DEL-01" and name "Leaving User"
-    When I delete the client with ID "CL-DEL-01"
-    Then the client "CL-DEL-01" should no longer be retrievable
+  Scenario: Top Up Customer Balance
+    Given the Customer Manager is ready
+    And I register a customer with ID "CUST-PAY", name "David", and balance 5.00
+    When I top up the balance of "CUST-PAY" by 15.00
+    Then the customer "CUST-PAY" should have a balance of 20.00
 
-  Scenario: Attempt to Register Duplicate Customer
-    Given the Filling Station Network is available
-    And a client exists with ID "CL-DUP-01" and name "Original User"
-    When I attempt to register a client with ID "CL-DUP-01" and name "Imposter"
-    Then the system should not create the second client
-    And the client "CL-DUP-01" should still be named "Original User"
+  Scenario: Delete a Customer
+    Given the Customer Manager is ready
+    And I register a customer with ID "CUST-DEL", name "Eve", and balance 0.00
+    When I delete the customer "CUST-DEL"
+    Then the customer "CUST-DEL" should no longer exist

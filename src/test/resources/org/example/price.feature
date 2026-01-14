@@ -1,32 +1,29 @@
 Feature: Price
-  As a Station Owner
-  I want to define and manage prices for different charging modes
-  So that the billing system calculates costs correctly
+  As an Administrator
+  I want to manage charging prices
+  So that the system calculates the correct costs for customers
 
-  Scenario: Set a new Price for AC charging
-    Given the Filling Station Network is available
-    When I set the price at location "Floridsdorf" to 0.50 per kWh and 0.10 per min for "AC"
-    Then the current "AC" price at "Flroridsdorf-01" should be 0.50 per kWh
+  Scenario: Set and Read a Price for a Location
+    Given the Price Manager is ready
+    When I set the price at location "LOC-01" to 0.50 per kWh and 0.05 per min for "AC"
+    Then the current "AC" price at "LOC-01" should be 0.50 per kWh and 0.05 per min
 
-  Scenario: Set a new Price for DC charging
-    Given the Filling Station Network is available
-    When I set the price at location "Floridsdorf" to 0.90 per kWh and 0.20 per min for "DC"
-    Then the current "DC" price at "Floridsdorf" should be 0.90 per kWh
+  Scenario: Update Price (Newer Valid Price overrides older)
+    Given the Price Manager is ready
+    And I set the price at location "LOC-02" to 0.40 per kWh and 0.04 per min for "DC"
+    # We add a small delay or just add another price which becomes the "latest" valid one
+    When I update the price at location "LOC-02" to 0.60 per kWh and 0.06 per min for "DC"
+    Then the current "DC" price at "LOC-02" should be 0.60 per kWh and 0.06 per min
 
-  Scenario: Update Price (Newer price supersedes older one)
-    Given the Filling Station Network is available
-    And I set the price at location "Donaustadt" to 0.40 per kWh and 0.05 per min for "AC"
-    When I set the price at location "Donaustadt" to 0.60 per kWh and 0.05 per min for "AC"
-    Then the current "AC" price at "Donaustadt" should be 0.60 per kWh
+  Scenario: Distinct Prices for Different Charger Modes
+    Given the Price Manager is ready
+    And I set the price at location "LOC-03" to 0.30 per kWh for "AC"
+    And I set the price at location "LOC-03" to 0.90 per kWh for "DC"
+    Then the current "AC" price at "LOC-03" should be 0.30 per kWh
+    And the current "DC" price at "LOC-03" should be 0.90 per kWh
 
-  Scenario: Maintain different prices for different locations
-    Given the Filling Station Network is available
-    When I set the price at location "Favoriten" to 0.50 per kWh and 0.10 per min for "AC"
-    And I set the price at location "Simmering " to 0.45 per kWh and 0.10 per min for "AC"
-    Then the current "AC" price at "Favoriten" should be 0.50 per kWh
-    And the current "AC" price at "Simmering " should be 0.45 per kWh
-
-  Scenario: Verify Price Duration component
-    Given the Filling Station Network is available
-    When I set the price at location "Brigittenau " to 0.00 per kWh and 0.50 per min for "DC"
-    Then the current "DC" price at "Brigittenau " should be 0.50 per min (duration)
+  Scenario: Verify Price List Contains History
+    Given the Price Manager is ready
+    And I set the price at location "LOC-HIST" to 0.50 per kWh for "AC"
+    And I update the price at location "LOC-HIST" to 0.55 per kWh for "AC"
+    Then location "LOC-HIST" should have 2 prices stored

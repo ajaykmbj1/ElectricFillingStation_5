@@ -13,8 +13,13 @@ public class Invoice {
         this.totalAmount = totalAmount;
     }
 
-    public String getInvoiceID() { return invoiceID; }
-    public double getTotalAmount() { return totalAmount; }
+    public String getInvoiceID() {
+        return invoiceID;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
 
     @Override
     public String toString() {

@@ -17,7 +17,7 @@ public class InvoiceManager {
     }
 
     public Invoice createInvoice(String invoiceID, ChargingSession session, PriceManager priceManager, String locationID) {
-        ChargerType type = session.getCharger();
+        ChargerType type = session.getChargerType();
         Price price = priceManager.readCurrentPrice(locationID, type);
 
         if (price == null) {
