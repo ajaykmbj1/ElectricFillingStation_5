@@ -1,5 +1,5 @@
 Feature: Location
-  As an Administrator
+  As an Owner
   I want to manage filling station locations
   So that I can keep track of where chargers are installed
 

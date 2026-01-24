@@ -1,5 +1,5 @@
 Feature: Customer
-  As an Administrator
+  As an Owner
   I want to manage customers (Register, Update, Top Up, Delete)
   So that I can maintain user accounts
 

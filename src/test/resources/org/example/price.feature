@@ -1,5 +1,5 @@
 Feature: Price
-  As an Administrator
+  As an Owner
   I want to manage charging prices
   So that the system calculates the correct costs for customers
 
@@ -11,7 +11,6 @@ Feature: Price
   Scenario: Update Price (Newer Valid Price overrides older)
     Given the Price Manager is ready
     And I set the price at location "LOC-02" to 0.40 per kWh and 0.04 per min for "DC"
-    # We add a small delay or just add another price which becomes the "latest" valid one
     When I update the price at location "LOC-02" to 0.60 per kWh and 0.06 per min for "DC"
     Then the current "DC" price at "LOC-02" should be 0.60 per kWh and 0.06 per min
 
@@ -27,3 +26,8 @@ Feature: Price
     And I set the price at location "LOC-HIST" to 0.50 per kWh for "AC"
     And I update the price at location "LOC-HIST" to 0.55 per kWh for "AC"
     Then location "LOC-HIST" should have 2 prices stored
+
+  Scenario: Check Price Validity Timestamp
+    Given the Price Manager is ready
+    When I set the price at location "LOC-TIME" to 0.55 per kWh for "AC"
+    Then the current "AC" price at "LOC-TIME" should be valid from now

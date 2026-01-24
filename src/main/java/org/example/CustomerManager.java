@@ -11,6 +11,13 @@ public class CustomerManager {
 
     }
 
+    public Customer createCustomerandReturn(String customerID, String name, double initialBalance) {
+        Customer customer = Customer.create(customerID, name, initialBalance);
+        customers.put(customer.getCustomerID(), customer);
+
+        return customer;
+    }
+
     public void topUpBalance(String customerId, double amount) {
         Customer customer = customers.get(customerId);
         if (customer == null) {

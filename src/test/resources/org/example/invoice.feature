@@ -1,8 +1,7 @@
-Feature: Invoice
-  As a System
+Feature: Invoice Management
+  As an Owner
   I want to generate and view invoices
   So that I can bill customers based on their usage
-
 
   Scenario: Generate an Invoice for a Session (AC Mixed Calculation)
     Given an invoice location exists with ID "Favoriten"
@@ -21,16 +20,16 @@ Feature: Invoice
     And an invoice exists with ID "INV-LIST-02" and amount 20.00
     Then the system should contain at least 2 invoices
 
-  Scenario: Verify Invoice Calculation for High Energy Usage (DC Power Only)
+  Scenario: Verify Invoice Calculation for High Energy Usage
     Given an invoice location exists with ID "Margareten"
     And I configure the invoice price at "Margareten" to 1.00 per kWh and 0.00 per min for "DC"
     And a valid session "SESS-HIGH-E" exists at "Margareten" with 100.0 kWh and 30.0 minutes duration and type "DC"
     When I generate an invoice for session "SESS-HIGH-E" at location "Margareten"
-    Then the invoice amount should be 100
+    Then the invoice amount should be 100.00
 
-  Scenario: Verify Invoice Calculation for Time Based Usage (AC Time Only)
-    Given an invoice location exists with ID "Simmering"
-    And I configure the invoice price at "Simmering" to 0.00 per kWh and 1.00 per min for "AC"
-    And a valid session "SESS-TIME" exists at "Simmering" with 5.0 kWh and 60.0 minutes duration and type "AC"
-    When I generate an invoice for session "SESS-TIME" at location "Simmering"
-    Then the invoice amount should be 60.00
+  Scenario: Check Invoice Date
+    Given an invoice location exists with ID "Wien-Mitte"
+    And I configure the invoice price at "Wien-Mitte" to 0.50 per kWh and 0.20 per min for "DC"
+    And a valid session "SESS-DATE" exists at "Wien-Mitte" with 10.0 kWh and 5.0 minutes duration and type "DC"
+    When I generate an invoice for session "SESS-DATE" at location "Wien-Mitte"
+    Then the invoice date should be today

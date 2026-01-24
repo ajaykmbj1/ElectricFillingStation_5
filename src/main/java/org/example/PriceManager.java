@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PriceManager {
     private Map<String, List<Price>> locationPrices = new HashMap<>();
@@ -16,7 +15,7 @@ public class PriceManager {
         if (prices == null) return null;
 
         return prices.stream()
-                .filter(p -> p.getMode() == mode)
+                .filter(p -> p.getType() == mode)
                 .sorted((p1, p2) -> p2.getValidFrom().compareTo(p1.getValidFrom()))
                 .findFirst()
                 .orElse(null);

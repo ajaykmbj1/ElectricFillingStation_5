@@ -5,30 +5,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitionsCustomer {
 
-    private CustomerManager customerManager = new CustomerManager();
+    private CustomerManager customerManager = CommonSteps.customerManager;
+
     private Customer lastReadCustomer;
-    private Exception lastError;
 
     @Given("the Customer Manager is ready")
     public void the_customer_manager_is_ready() {
-        // Reset manager for each scenario
-        customerManager = new CustomerManager();
+        if (CommonSteps.customerManager == null) {
+            CommonSteps.customerManager = new CustomerManager();
+        }
+        this.customerManager = CommonSteps.customerManager;
     }
 
     @When("I register a customer with ID {string}, name {string}, and balance {double}")
     public void i_register_a_customer(String id, String name, double balance) {
-        // Matching your Customer.java constructor/factory
-        // Assuming: new Customer() -> create() or similar logic.
-        // Based on bytecode, you likely have a factory or constructor.
-        // I will use the Constructor pattern which fits most simple POJOs:
+        // Sicherstellen, dass Manager existiert
+        if (customerManager == null) customerManager = new CustomerManager();
 
-        // IF your class uses a static create method, change this line!
-        // But standard POJO usually allows:
-
-        // We set fields via the helper method 'create' seen in bytecode or setters
-        // Bytecode showed a 'create' method in Customer class:
         Customer customer = Customer.create(id, name, balance);
-
         customerManager.createCustomer(customer);
     }
 
@@ -61,8 +55,6 @@ public class StepDefinitionsCustomer {
     public void i_update_customer_name(String id, String newName) {
         Customer c = customerManager.readCustomer(id);
         assertNotNull(c, "Cannot update non-existent customer");
-
-        // Based on bytecode: updateName(String)
         Customer updated = c.updateName(newName);
         customerManager.updateCustomer(updated);
     }
@@ -75,7 +67,6 @@ public class StepDefinitionsCustomer {
 
     @When("I top up the balance of {string} by {double}")
     public void i_top_up_balance(String id, double amount) {
-        // Based on bytecode: topUpBalance(String id, double amount)
         customerManager.topUpBalance(id, amount);
     }
 

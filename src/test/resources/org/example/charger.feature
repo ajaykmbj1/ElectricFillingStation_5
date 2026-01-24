@@ -1,5 +1,5 @@
 Feature: Charger
-  As an Administrator
+  As an Owner
   I want to manage chargers (Create, Read, Update, Delete)
   So that the infrastructure matches the physical stations
 

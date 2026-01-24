@@ -1,30 +1,30 @@
 package org.example;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Price {
     private String priceID;
-    private ChargerType mode; // AC or DC
-    private double performanceKwh; // Price per kWh (e.g., 0.50)
-    private double durationMin;    // Price per Minute (e.g., 0.05)
-    private Date validFrom;
+    private ChargerType type;
+    private double performanceKwh;
+    private double durationMin;
+    private LocalDateTime validFrom;
 
-    public Price(String priceID, ChargerType mode, double performanceKwh, double durationMin, Date validFrom) {
+    public Price(String priceID, ChargerType mode, double performanceKwh, double durationMin) {
         this.priceID = priceID;
-        this.mode = mode;
+        this.type = mode;
         this.performanceKwh = performanceKwh;
         this.durationMin = durationMin;
-        this.validFrom = validFrom;
+        this.validFrom =  LocalDateTime.now();
     }
 
     public String getPriceID() { return priceID; }
-    public ChargerType getMode() { return mode; }
+    public ChargerType getType() { return type; }
     public double getPerformanceKwh() { return performanceKwh; }
     public double getDurationMin() { return durationMin; }
-    public Date getValidFrom() { return validFrom; }
+    public LocalDateTime getValidFrom() { return validFrom; }
 
     @Override
     public String toString() {
-        return "Price{ID='" + priceID + "', Mode=" + mode + ", perKwh=" + performanceKwh + ", perMin=" + durationMin + "}";
+        return "Price{ID='" + priceID + "', Mode=" + type + ", perKwh=" + performanceKwh + ", perMin=" + durationMin + "}";
     }
 }
