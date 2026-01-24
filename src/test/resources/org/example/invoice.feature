@@ -33,3 +33,10 @@ Feature: Invoice Management
     And a valid session "SESS-DATE" exists at "Wien-Mitte" with 10.0 kWh and 5.0 minutes duration and type "DC"
     When I generate an invoice for session "SESS-DATE" at location "Wien-Mitte"
     Then the invoice date should be today
+
+  Scenario: Edge Case - Invoice for Zero Usage
+    Given an invoice location exists with ID "Free-Zone"
+    And I configure the invoice price at "Free-Zone" to 0.50 per kWh and 0.50 per min for "AC"
+    And a valid session "SESS-ZERO" exists at "Free-Zone" with 0.0 kWh and 0.0 minutes duration and type "AC"
+    When I generate an invoice for session "SESS-ZERO" at location "Free-Zone"
+    Then the invoice amount should be 0.00

@@ -32,3 +32,8 @@ Feature: Location
     And I create a location with ID "LOC-DUP" and name "First Site"
     When I try to create another location with ID "LOC-DUP" and name "Second Site"
     Then I should receive a location error message "Location ID already exists"
+
+  Scenario: Edge Case - Delete non-existent Location
+    Given the Filling Station Network is available
+    When I delete the location "LOC-GHOST"
+    Then the location "LOC-GHOST" should no longer exist

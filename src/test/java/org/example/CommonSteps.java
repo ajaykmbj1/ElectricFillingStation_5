@@ -1,25 +1,25 @@
 package org.example;
 
-import io.cucumber.java.en.Given;
-
 public class CommonSteps {
+    // Statische Instanzen, damit alle Tests denselben Zustand nutzen
+    public static LocationManager locationManager = new LocationManager();
+    public static ChargerManager chargerManager = new ChargerManager();
+    public static CustomerManager customerManager = new CustomerManager();
+    public static PriceManager priceManager = new PriceManager();
+    public static ChargingSessionManager sessionManager = new ChargingSessionManager();
+    public static InvoiceManager invoiceManager = new InvoiceManager();
 
-    // Shared Managers (static so they are shared across test files)
-    public static LocationManager locationManager;
-    public static ChargerManager chargerManager;
-    public static CustomerManager customerManager;
-    public static PriceManager priceManager;
-    public static InvoiceManager invoiceManager;
-    public static ChargingSessionManager sessionManager;
+    // NEU: Hier speichern wir den letzten Fehler, der aufgetreten ist
+    public static Exception lastError = null;
 
-    @Given("the Filling Station Network is available")
-    public void setupNetwork() {
-        // Reset everything for a fresh test scenario
+    // Hilfsmethode zum Resetten vor jedem Szenario
+    public static void reset() {
         locationManager = new LocationManager();
         chargerManager = new ChargerManager();
         customerManager = new CustomerManager();
         priceManager = new PriceManager();
-        invoiceManager = new InvoiceManager();
         sessionManager = new ChargingSessionManager();
+        invoiceManager = new InvoiceManager();
+        lastError = null;
     }
 }

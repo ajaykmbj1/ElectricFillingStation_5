@@ -20,3 +20,11 @@ Feature: Charging Session Management
     And I stop the session "SESS-T2"
     Then the session "SESS-T2" should have a valid end time
     And the session end time should be after the start time
+
+  Scenario: Edge Case - Start and Stop Session immediately
+    Given the Filling Station Network is available
+    And I create a charger with ID "CH-FAST" of type "DC"
+    And I register a customer with ID "C-FAST" and name "Flash" and balance 10.00
+    And I start a session "SESS-FAST" at charger "CH-FAST" for customer "C-FAST"
+    When I stop the session "SESS-FAST"
+    Then the session "SESS-FAST" should have a valid end time

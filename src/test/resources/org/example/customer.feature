@@ -32,3 +32,9 @@ Feature: Customer
     And I register a customer with ID "CUST-DEL", name "Eve", and balance 0.00
     When I delete the customer "CUST-DEL"
     Then the customer "CUST-DEL" should no longer exist
+
+  Scenario: Edge Case - Register Customer with Zero Balance
+    Given the Filling Station Network is available
+    When I register a customer with ID "CUST-ZERO" and name "Zero Hero" and balance 0.00
+    Then the customer "CUST-ZERO" should exist
+    And the customer "CUST-ZERO" should have a balance of 0.00

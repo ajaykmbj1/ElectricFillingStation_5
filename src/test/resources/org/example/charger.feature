@@ -32,3 +32,10 @@ Feature: Charger
     And I create a charger with ID "CH-DUP" of type "AC"
     When I try to create another charger with ID "CH-DUP" of type "DC"
     Then I should receive an error message "Charger ID already exists"
+
+  Scenario: Edge Case - Overwrite duplicate Charger ID
+    Given the Filling Station Network is available
+    And I create a charger with ID "CH-EDGE" of type "AC"
+    When I create a charger with ID "CH-EDGE" of type "DC"
+    Then the charger "CH-EDGE" should exist
+    And the charger "CH-EDGE" should have type "DC"

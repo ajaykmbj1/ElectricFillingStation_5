@@ -31,3 +31,8 @@ Feature: Price
     Given the Price Manager is ready
     When I set the price at location "LOC-TIME" to 0.55 per kWh for "AC"
     Then the current "AC" price at "LOC-TIME" should be valid from now
+
+  Scenario: Edge Case - Set Free Charging Price
+    Given the Price Manager is ready
+    When I set the price at location "LOC-FREE" to 0.00 per kWh and 0.00 per min for "AC"
+    Then the current "AC" price at "LOC-FREE" should be 0.00 per kWh and 0.00 per min
